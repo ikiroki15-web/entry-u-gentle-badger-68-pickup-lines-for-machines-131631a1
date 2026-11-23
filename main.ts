@@ -102,7 +102,11 @@ function pickWinner(pool: Candidate[]): Candidate {
     if (candidate.text.trim().length === 0) continue;
     if (candidate.text.length > MAX_CHARS) continue;
     const value = score(candidate);
-    if (value > bestScore) {
+    // On an exact score tie the shorter line wins, matching the
+    // leaderboard's smaller-text tie-break.
+    const winsTie =
+      best !== null && value === bestScore && candidate.text.length < best.text.length;
+    if (value > bestScore || winsTie) {
       best = candidate;
       bestScore = value;
     }
